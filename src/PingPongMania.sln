@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PingService", "PingService\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PongService", "PongService\PongService.csproj", "{1B70554F-7BE8-45F4-AD9F-43F030E1EA6E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlayerService", "PlayerService\PlayerService.csproj", "{2B3D6A05-81DC-4085-AE8C-C6AF2B1C67BD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlayService", "PlayService\PlayService.csproj", "{2B3D6A05-81DC-4085-AE8C-C6AF2B1C67BD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

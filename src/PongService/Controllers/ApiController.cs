@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace PlayerService.Controllers;
+namespace PongService.Controllers;
 
 [ApiController]
 [Route("[controller]")]
@@ -13,10 +13,10 @@ public class ApiController : ControllerBase
         _logger = logger;
     }
 
-    [HttpGet("play")]
+    [HttpGet("pong")]
     public IActionResult Get()
     {
-        _logger.LogInformation("Play has been called.");
-        return Ok("play");
+        _logger.LogInformation("Pong has been invoked.");
+        return Ok("pong");
     }
 }
