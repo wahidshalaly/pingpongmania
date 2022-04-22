@@ -1,0 +1,26 @@
+apiVersion: skaffold/v2beta28
+kind: Config
+metadata:
+  name: pingpongmania
+build:
+  artifacts:
+  - image: ping-service
+    context: src/PingService
+    docker:
+      dockerfile: Dockerfile
+  - image: play-service
+    context: src/PlayService
+    docker:
+      dockerfile: Dockerfile
+  - image: pong-service
+    context: src/PongService
+    docker:
+      dockerfile: Dockerfile
+deploy:
+  kubectl:
+    manifests:
+    - deploy\manifests\namespace.yaml
+    - deploy\manifests\pong-service\deployment.yaml
+    - deploy\manifests\ping-service\deployment.yaml
+    - deploy\manifests\play-service\deployment.yaml
+    - deploy\manifests\ingress.yaml

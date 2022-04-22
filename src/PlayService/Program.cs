@@ -12,14 +12,6 @@ builder.Services.AddSwaggerGen(c =>
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Play API", Version = "v1" });
 });
 
-var config = new ConfigurationBuilder()
-    .AddJsonFile("appsettings.json")
-    .AddEnvironmentVariables()
-    .Build();
-
-string pingBaseUrl = config.GetValue<string>("PingBaseUrl");
-builder.Services.AddHttpClient("Ping", client => client.BaseAddress = new Uri(pingBaseUrl));
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -30,12 +22,6 @@ if (app.Environment.IsDevelopment())
 
 app.UseSwagger();
 app.UseSwaggerUI();
-
-app.UseHttpsRedirection();
-
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
 
 app.MapControllers();
 

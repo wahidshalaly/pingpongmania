@@ -1,36 +1,15 @@
-# Tools
-- Use `watch` command to keep APIs running and refreshing in the background
-> TODO: Need an example of use
+# Welcome to Dapr demo repository
+In this demo, we'll introduce you to basics of Dapr step by step.
+This demo is based on a simple example of 3 services each has a single endpoint, namely Play, Ping, and Pong services.
+There's only one simple scenario for interaction between them, Play service calls Ping service, and Ping service calls Pong service.
 
-- Use [HTTPie](https://httpie.io) for quick API testing
-> TODO: Need an example of use
+This demo is deployed on Azure Kubernetes Service (AKS) and Docker images are stored in Azure Container Registry (ACR).
 
-- Fix missing NuGet package error after restore by using a .dockerignore file
-https://docs.microsoft.com/en-us/dotnet/core/tools/sdk-errors/netsdk1064
-https://stackoverflow.com/questions/61167032/error-netsdk1064-package-dnsclient-1-2-0-was-not-found
+To speed development on Kubernetes, [Skaffold](https://skaffold.dev) is utilised to make experimenting faster.
 
-------
-
-# Attach ACR to AKS (If AKS is not already connected to ACR)
+## Attach ACR to AKS (If AKS is not already connected to ACR)
 ```
 az aks update -n MyK8sLab -g MyLab --attach-acr wshalalylab
-```
-
-# Steps to package and deploy solution
-
----
-## Create container image using ACR CLI
-```
-az acr build -t pingpongmania/ping-service:0.1.0-{{.Run.ID}} -r wshalalylab .
-az acr build -t pingpongmania/pong-service:0.1.0-{{.Run.ID}} -r wshalalylab .
-az acr build -t pingpongmania/play-service:0.1.0-{{.Run.ID}} -r wshalalylab .
-```
-
-## Package helm chart (from ./deploy/helm folder)
-```
-helm package play-service
-helm package ping-service
-helm package pong-service
 ```
 
 ## To authenticate to use Azure via Az CLI, AKS via Kubectl, and ACR via Helm CLI(v3)
@@ -42,35 +21,51 @@ az acr login -n wshalalylab
 ```
 > Note: Docker daemon must be running because it's used to store the access token.
 
-## Push helm chart to remote repository
+# Skaffold for development mode
+
+## Skaffold initiation
+This is required only once before you start using Skaffold.
 ```
-helm push play-service-0.4.0.tgz oci://wshalalylab.azurecr.io/helm
-helm push ping-service-0.4.0.tgz oci://wshalalylab.azurecr.io/helm
-helm push pong-service-0.4.0.tgz oci://wshalalylab.azurecr.io/helm
+skaffold init --generate-manifests
+```
+Then select to build images using Dockerfile.
+Also, you'll need to do minor modifications to generated manifests that suit your preferences and desired architecture.
+
+---
+## Build container images, deploy them, and watch running services
+Before building any images, you need to set the default repository for pushing images
+```
+set SKAFFOLD_DEFAULT_REPO=wshalalylab.azurecr.io/pingpongmania
+```
+Then you can use Skaffold development mode to watch file changes and automatically build new container images and deploy them to the cluster.
+```
+skaffold dev
 ```
 
-## Install, upgrade, and uninstall Helm charts
-
-### Install charts
+If you need to run only without watching changes, you can use 
 ```
-helm install pong-service oci://wshalalylab.azurecr.io/helm/pong-service --version 0.4.0
-helm install ping-service oci://wshalalylab.azurecr.io/helm/ping-service --version 0.4.0
-helm install play-service oci://wshalalylab.azurecr.io/helm/play-service --version 0.4.0
+skaffold run --cleanup=true --tail=true
 ```
 
-### Upgrade installed charts
+To clean up after you finish
 ```
-helm upgrade pong-service oci://wshalalylab.azurecr.io/helm/pong-service --version 0.4.0
-helm upgrade ping-service oci://wshalalylab.azurecr.io/helm/ping-service --version 0.4.0
-helm upgrade play-service oci://wshalalylab.azurecr.io/helm/play-service --version 0.4.0
+skaffold delete
 ```
 
-### Uninstall charts
+---
+
+# Tips
+- During local development, you can use `watch` command to keep APIs running and refreshing in the background
 ```
-helm uninstall play-service
-helm uninstall ping-service
-helm uninstall pong-service
+dotnet watch run --project src\PingService\PingService.csproj
+```
+But when you do not need this when you're using `skaffold dev`
+- You can use [HTTPie](https://httpie.io) for quick API testing
+```
+http GET http://localhost:5000/api/ping
 ```
 
+- Fix missing NuGet package error after restore by using a .dockerignore file
+https://docs.microsoft.com/en-us/dotnet/core/tools/sdk-errors/netsdk1064
+https://stackoverflow.com/questions/61167032/error-netsdk1064-package-dnsclient-1-2-0-was-not-found
 
-Note: Next deployment can be done using `helm upgrade` instead of `helm install`

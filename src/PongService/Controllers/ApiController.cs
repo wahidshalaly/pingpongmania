@@ -16,7 +16,7 @@ public class ApiController : ControllerBase
     [HttpGet("pong")]
     public IActionResult Get()
     {
-        _logger.LogInformation("Pong has been invoked.");
-        return Ok("pong");
+        _logger.LogInformation("Pong service has been invoked.");
+        return Ok();
     }
 }

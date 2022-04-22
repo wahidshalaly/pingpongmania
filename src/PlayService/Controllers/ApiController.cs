@@ -1,3 +1,4 @@
+using Dapr.Client;
 using Microsoft.AspNetCore.Mvc;
 
 namespace PlayService.Controllers;
@@ -7,19 +8,30 @@ namespace PlayService.Controllers;
 public class ApiController : ControllerBase
 {
     private readonly ILogger<ApiController> _logger;
-    private readonly IHttpClientFactory _httpClientFactory;
 
-    public ApiController(ILogger<ApiController> logger, IHttpClientFactory httpClientFactory)
+    public ApiController(ILogger<ApiController> logger)
     {
         _logger = logger;
-        _httpClientFactory = httpClientFactory;
     }
 
     [HttpGet("play")]
-    public IActionResult Get()
+    public async Task<IActionResult> Get()
     {
-        _logger.LogInformation("Play has been invoked.");
-        _httpClientFactory.CreateClient("Ping").GetStringAsync("api/ping");
-        return Ok("play");
+        _logger.LogInformation("Play service has been invoked.");
+
+        try
+        {
+            using var client = new DaprClientBuilder().Build();
+            await client.InvokeMethodAsync(HttpMethod.Get, appId: "ping-api", methodName: "api/ping");
+            _logger.LogInformation("Ping service has been invoked successfully.");
+
+            return Ok();
+        }
+        catch (Exception exception)
+        {
+            const string errorMessage = "Failed to invoke Ping service.";
+            _logger.LogError(exception, errorMessage);
+            return Problem(errorMessage);
+        }
     }
 }
