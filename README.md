@@ -13,10 +13,12 @@ az aks update -n MyK8sLab -g MyLab --attach-acr wshalalylab
 ```
 
 ## To authenticate to use Azure via Az CLI, AKS via Kubectl, and ACR via Helm CLI(v3)
+Sign in to Azure via browser code flow - this is not required frequently
 ```
 az login --use-device-code
-
-#ACR registry name: wshalalylab
+```
+Sign in to ACR (wshalalylab.azurecr.io) - this will need to be refreshed every few hours.
+```
 az acr login -n wshalalylab
 ```
 > Note: Docker daemon must be running because it's used to store the access token.
@@ -44,7 +46,7 @@ skaffold dev
 
 If you need to run only without watching changes, you can use 
 ```
-skaffold run --cleanup=true --tail=true
+skaffold run --cleanup --tail
 ```
 
 To clean up after you finish
@@ -65,7 +67,7 @@ But when you do not need this when you're using `skaffold dev`
 http GET http://localhost:5000/api/ping
 ```
 
-- Fix missing NuGet package error after restore by using a .dockerignore file
+- To fix the NuGet missing package error `NETSDK1064`, make sure to have a `.dockerignore` file.
+It must be located at the root of the context used for Docker Build command.
 https://docs.microsoft.com/en-us/dotnet/core/tools/sdk-errors/netsdk1064
 https://stackoverflow.com/questions/61167032/error-netsdk1064-package-dnsclient-1-2-0-was-not-found
-

@@ -14,10 +14,10 @@ public class PlayController : ControllerBase
         _logger = logger;
     }
 
-    [HttpGet("api/play/{method}")]
+    [HttpGet("api/play/{method=http}")]
     public async Task<IActionResult> Get(Transport method = Transport.Http)
     {
-        _logger.LogInformation("Play service has been invoked.");
+        _logger.LogInformation("Play service has been invoked via {method}.", method);
 
         try
         {
@@ -44,7 +44,7 @@ public class PlayController : ControllerBase
     private static async Task SendViaPubSub()
     {
         using var client = new DaprClientBuilder().Build();
-        await client.PublishEventAsync(PingPubSub, PingTopic, CreateMessage());
+        await client.PublishEventAsync(PubSubName, PingTopic, CreateMessage());
     }
 
     private static PingMessage CreateMessage() => new(Guid.NewGuid(), DateTimeOffset.UtcNow);

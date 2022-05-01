@@ -24,3 +24,4 @@ deploy:
     - deploy\manifests\ping-service\deployment.yaml
     - deploy\manifests\play-service\deployment.yaml
     - deploy\manifests\ingress.yaml
+    - deploy\manifests\servicebus.yaml

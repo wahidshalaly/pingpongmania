@@ -15,11 +15,9 @@ public class PingController : ControllerBase
         _logger = logger;
     }
 
-    // TODO: Investigate why using constants doesn't work [Topic(Constants.PingPubSub, Constants.PingTopic)]
-    [Topic("ping-pubsub", "ping-topic")]
     [HttpGet("api/ping")]
     public async Task<IActionResult> Get()
-{
+    {
         _logger.LogInformation("Ping service has been invoked.");
 
         try
@@ -36,5 +34,13 @@ public class PingController : ControllerBase
             _logger.LogError(exception, errorMessage);
             return Problem(errorMessage);
         }
+    }
+
+    [Topic(PubSubName, PingTopic)]
+    [HttpPost("api/ping")]
+    public async Task<IActionResult> Post([FromBody] PingMessage msg)
+    {
+        _logger.LogInformation("Ping message Id: [{0}], Timestamp: [{1}].", msg.Id, msg.Timestamp);
+        return await Get();
     }
 }

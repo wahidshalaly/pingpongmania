@@ -1,0 +1,13 @@
+apiVersion: dapr.io/v1alpha1
+kind: Component
+metadata:
+  name: pingpongmania-pubsub
+  namespace: pingpongmania-dev
+spec:
+  type: pubsub.azure.servicebus
+  version: v1
+  metadata:
+  - name: connectionString # Required when not using Azure Authentication.
+    value: "Endpoint=sb://{ServiceBusNamespace}.servicebus.windows.net/;SharedAccessKeyName={PolicyName};SharedAccessKey={Key};EntityPath={EntityPath}"
+# Values for `ServiceBusNamespace`, `PolicyName`, `Key`, and `EntityPath` should be manually replaced with actual values & not checked in.
+# In next step, these values will be extracted from a secret store

@@ -25,4 +25,8 @@ app.UseSwaggerUI();
 
 app.MapControllers();
 
+// Configure Dapr Subscribe endpoints
+app.UseCloudEvents();
+app.MapSubscribeHandler();
+
 app.Run();
