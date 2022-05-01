@@ -4,18 +4,18 @@ metadata:
   name: pingpongmania
 build:
   artifacts:
-  - image: ping-service
-    context: src/PingService
-    docker:
-      dockerfile: Dockerfile
-  - image: play-service
-    context: src/PlayService
-    docker:
-      dockerfile: Dockerfile
   - image: pong-service
-    context: src/PongService
+    context: src
     docker:
-      dockerfile: Dockerfile
+      dockerfile: PongService/Dockerfile
+  - image: ping-service
+    context: src
+    docker:
+      dockerfile: PingService/Dockerfile
+  - image: play-service
+    context: src
+    docker:
+      dockerfile: PlayService/Dockerfile
 deploy:
   kubectl:
     manifests:

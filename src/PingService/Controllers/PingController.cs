@@ -1,20 +1,23 @@
+using Dapr;
 using Dapr.Client;
 using Microsoft.AspNetCore.Mvc;
+using static PingPongMania.Constants;
 
-namespace PingService.Controllers;
+namespace PingPongMania.PingService.Controllers;
 
 [ApiController]
-[Route("[controller]")]
-public class ApiController : ControllerBase
+public class PingController : ControllerBase
 {
-    private readonly ILogger<ApiController> _logger;
+    private readonly ILogger<PingController> _logger;
 
-    public ApiController(ILogger<ApiController> logger)
+    public PingController(ILogger<PingController> logger)
     {
         _logger = logger;
     }
 
-    [HttpGet("ping")]
+    // TODO: Investigate why using constants doesn't work [Topic(Constants.PingPubSub, Constants.PingTopic)]
+    [Topic("ping-pubsub", "ping-topic")]
+    [HttpGet("api/ping")]
     public async Task<IActionResult> Get()
 {
         _logger.LogInformation("Ping service has been invoked.");
@@ -22,7 +25,7 @@ public class ApiController : ControllerBase
         try
         {
             using var client = new DaprClientBuilder().Build();
-            await client.InvokeMethodAsync(HttpMethod.Get, appId: "pong-api", methodName: "api/pong");
+            await client.InvokeMethodAsync(HttpMethod.Get, appId: PongAppId, "api/pong");
             _logger.LogInformation("Pong service has been invoked successfully.");
 
             return Ok();

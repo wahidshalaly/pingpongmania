@@ -1,6 +1,0 @@
-# directories
-**/bin/
-**/obj/
-
-# files
-Dockerfile*
