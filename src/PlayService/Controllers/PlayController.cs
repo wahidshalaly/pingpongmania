@@ -7,6 +7,8 @@ namespace PingPongMania.PlayService.Controllers;
 [ApiController]
 public class PlayController : ControllerBase
 {
+    private readonly static DaprClient _client = new DaprClientBuilder().Build();
+
     private readonly ILogger<PlayController> _logger;
 
     public PlayController(ILogger<PlayController> logger)
@@ -37,14 +39,12 @@ public class PlayController : ControllerBase
 
     private static async Task SendViaHttp()
     {
-        using var client = new DaprClientBuilder().Build();
-        await client.InvokeMethodAsync(HttpMethod.Get, appId: PingAppId, "api/ping");
+        await _client.InvokeMethodAsync(HttpMethod.Get, appId: PingAppId, "api/ping");
     }
 
     private static async Task SendViaPubSub()
     {
-        using var client = new DaprClientBuilder().Build();
-        await client.PublishEventAsync(PubSubName, PingTopic, CreateMessage());
+        await _client.PublishEventAsync(PubSubName, PingTopic, CreateMessage());
     }
 
     private static PingMessage CreateMessage() => new(Guid.NewGuid(), DateTimeOffset.UtcNow);

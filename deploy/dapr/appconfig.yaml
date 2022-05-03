@@ -8,4 +8,4 @@ spec:
     scopes:
       - storeName: kubernetes
         defaultAccess: deny
-        allowedSecrets: ["asb-connection-string"]
+        allowedSecrets: ["asb-connection-string", "storage-account-key"]

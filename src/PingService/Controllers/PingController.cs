@@ -8,6 +8,8 @@ namespace PingPongMania.PingService.Controllers;
 [ApiController]
 public class PingController : ControllerBase
 {
+    private readonly static DaprClient _client = new DaprClientBuilder().Build();
+
     private readonly ILogger<PingController> _logger;
 
     public PingController(ILogger<PingController> logger)
@@ -16,14 +18,13 @@ public class PingController : ControllerBase
     }
 
     [HttpGet("api/ping")]
-    public async Task<IActionResult> Get()
+    public async Task<IActionResult> Reply()
     {
         _logger.LogInformation("Ping service has been invoked.");
 
         try
         {
-            using var client = new DaprClientBuilder().Build();
-            await client.InvokeMethodAsync(HttpMethod.Get, appId: PongAppId, "api/pong");
+            await _client.InvokeMethodAsync(HttpMethod.Get, appId: PongAppId, "api/pong");
             _logger.LogInformation("Pong service has been invoked successfully.");
 
             return Ok();
@@ -38,11 +39,10 @@ public class PingController : ControllerBase
 
     [Topic(PubSubName, PingTopic)]
     [HttpPost("api/ping")]
-    public async Task<IActionResult> Post([FromBody] PingMessage msg)
+    public async Task<IActionResult> Store([FromBody] PingMessage msg)
     {
-        using var client = new DaprClientBuilder().Build();
-        await client.SaveStateAsync(StoreName, msg.Id.ToString(), msg);
-        _logger.LogInformation("Ping message Id: [{0}], Timestamp: [{1}].", msg.Id, msg.Timestamp);
-        return await Get();
+        await _client.SaveStateAsync(StoreName, msg.Id.ToString(), msg);
+        _logger.LogInformation("Ping message Id: [{0}], Timestamp: [{1}] has been saved.", msg.Id, msg.Timestamp);
+        return await Reply();
     }
 }
