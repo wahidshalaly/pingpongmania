@@ -1,9 +1,9 @@
-# Welcome to Dapr demo repository
-In this demo, we'll introduce you to basics of Dapr step by step.
-This demo is based on a simple example of 3 services each has a single endpoint, namely Play, Ping, and Pong services.
+# Welcome to Dapr experiment repository
+In this experiment, we'll introduce you to basics of Dapr step by step.
+This experiment is based on a simple example of 3 services each has a single endpoint, namely Play, Ping, and Pong services.
 There's only one simple scenario for interaction between them, Play service calls Ping service, and Ping service calls Pong service.
 
-This demo is deployed on Azure Kubernetes Service (AKS) and Docker images are stored in Azure Container Registry (ACR).
+This experiment is deployed on Azure Kubernetes Service (AKS) and Docker images are stored in Azure Container Registry (ACR).
 
 To speed development on Kubernetes, [Skaffold](https://skaffold.dev) is utilised to make experimenting faster.
 
@@ -54,7 +54,13 @@ To clean up after you finish
 skaffold delete
 ```
 
----
+# Secret Store
+I'll use Kubernetes secrets as for this experiment.
+First, you'll need to create a secret in Kubernetes outside of the Skaffold process.
+You can store the value in a text file and use `kubectl` to create the secret.
+```
+kubectl create secret generic asb-connection-string --from-file=connectionString=.\servicebus-connectionstring.txt -n pingpongmania-dev
+```
 
 # Tips
 - During local development, you can use `watch` command to keep APIs running and refreshing in the background

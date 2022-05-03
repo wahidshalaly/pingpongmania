@@ -19,9 +19,12 @@ build:
 deploy:
   kubectl:
     manifests:
-    - deploy\manifests\namespace.yaml
+    - deploy\namespace.yaml
+    # Dapr components
+    - deploy\dapr\appconfig.yaml
+    - deploy\dapr\servicebus.yaml
+    # Kubernetes manifests
     - deploy\manifests\pong-service\deployment.yaml
     - deploy\manifests\ping-service\deployment.yaml
     - deploy\manifests\play-service\deployment.yaml
     - deploy\manifests\ingress.yaml
-    - deploy\manifests\servicebus.yaml

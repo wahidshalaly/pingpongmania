@@ -1,0 +1,11 @@
+apiVersion: dapr.io/v1alpha1
+kind: Configuration
+metadata:
+  name: appconfig
+  namespace: pingpongmania-dev
+spec:
+  secrets:
+    scopes:
+      - storeName: kubernetes
+        defaultAccess: deny
+        allowedSecrets: ["asb-connection-string"]
