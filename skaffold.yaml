@@ -23,6 +23,7 @@ deploy:
     # Dapr components
     - deploy\dapr\appconfig.yaml
     - deploy\dapr\servicebus.yaml
+    - deploy\dapr\statestore.yaml
     # Kubernetes manifests
     - deploy\manifests\pong-service\deployment.yaml
     - deploy\manifests\ping-service\deployment.yaml

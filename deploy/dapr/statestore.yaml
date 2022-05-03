@@ -1,0 +1,17 @@
+apiVersion: dapr.io/v1alpha1
+kind: Component
+metadata:
+  name: pingpongmania-store
+  namespace: pingpongmania-dev
+spec:
+  type: state.azure.tablestorage
+  version: v1
+  metadata:
+  - name: accountName
+    value: wsstrg20220218
+  - name: accountKey
+    secretKeyRef:
+      key: storageAccountName
+      name: storage-account-key
+  - name: tableName
+    value: pings

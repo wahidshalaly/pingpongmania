@@ -7,4 +7,6 @@ public static class Constants
 
     public const string PubSubName = "pingpongmania-pubsub";
     public const string PingTopic = "ping-topic";
+
+    public const string StoreName = "pingpongmania-store";
 }

@@ -40,6 +40,8 @@ public class PingController : ControllerBase
     [HttpPost("api/ping")]
     public async Task<IActionResult> Post([FromBody] PingMessage msg)
     {
+        using var client = new DaprClientBuilder().Build();
+        await client.SaveStateAsync(StoreName, msg.Id.ToString(), msg);
         _logger.LogInformation("Ping message Id: [{0}], Timestamp: [{1}].", msg.Id, msg.Timestamp);
         return await Get();
     }
