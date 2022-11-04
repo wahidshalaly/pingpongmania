@@ -14,9 +14,18 @@
             "Release"
           ]
         },
+        "ContainerRegistry": {
+          "type": "string"
+        },
         "Continue": {
           "type": "boolean",
           "description": "Indicates to continue a previously failed build attempt"
+        },
+        "DockerPassword": {
+          "type": "string"
+        },
+        "DockerUsername": {
+          "type": "string"
         },
         "Help": {
           "type": "boolean",
@@ -72,9 +81,11 @@
           "items": {
             "type": "string",
             "enum": [
+              "BuildDockerImages",
+              "BuildInfo",
               "Clean",
               "Compile",
-              "Print",
+              "Deploy",
               "Restore"
             ]
           }
@@ -89,9 +100,11 @@
           "items": {
             "type": "string",
             "enum": [
+              "BuildDockerImages",
+              "BuildInfo",
               "Clean",
               "Compile",
-              "Print",
+              "Deploy",
               "Restore"
             ]
           }
