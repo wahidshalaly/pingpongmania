@@ -28,7 +28,7 @@ If you're not using a local cluster you'll need to use a container registry, lik
 
 Before building any images, you need to set the default repository if you're not using local cluster
 ```pwsh
-$env:SKAFFOLD_DEFAULT_REPO=wshalalylab.azurecr.io/pingpongmania
+$env:SKAFFOLD_DEFAULT_REPO='wshalalylab.azurecr.io/pingpongmania'
 gci $env:SKAFFOLD_DEFAULT_REPO
 ```
 
