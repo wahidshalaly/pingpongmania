@@ -24,6 +24,7 @@ class Build : NukeBuild
     [Parameter] private readonly string DockerUsername;
     [Parameter] private readonly string DockerPassword;
 
+    private const string ContainerNamespace = "pingpongmania";
     private string OutputDirectory => RootDirectory / ".output";
     private string Dockerfile => RootDirectory / "deploy" / "docker" / "Dockerfile";
 
@@ -62,7 +63,7 @@ class Build : NukeBuild
                 .EnableNoRestore());
         });
 
-    Target BuildDockerImages => _ => _
+    Target PushDockerImages => _ => _
         .Requires(() => ContainerRegistry)
         .Requires(() => DockerUsername)
         .Requires(() => DockerPassword)
@@ -74,27 +75,18 @@ class Build : NukeBuild
                 .SetUsername(DockerUsername)
                 .SetPassword(DockerPassword));
 
-            const string ContainerNamespace = "pingpongmania";
-
-            foreach (var (projectName, imageName) in ProjectsToDockerise())
+            foreach (var project in Solution.GetProjects("*Service"))
             {
-                var imageTag = $"{ContainerRegistry}/{ContainerNamespace}/{imageName}:{VersionInfo.SemVer2}";
-                BuildDockerImageForService(projectName, imageTag);
+                BuildDockerImageFor(project);
             }
         });
 
-    private IEnumerable<(string, string)> ProjectsToDockerise()
+    private void BuildDockerImageFor(Project project)
     {
-        yield return ("PingService", "ping-service");
-        yield return ("PongService", "pong-service");
-        yield return ("PlayService", "play-service");
-    }
-
-    private void BuildDockerImageForService(string projectName, string imageTag)
-    {
-        var project = Solution.GetProject(projectName);
+        var projectName = project.Name;
+        var imageName = project.GetProperty("ImageName");
+        var imageTag = FormatImageTag(imageName);
         var publishDirectory = $"{OutputDirectory}/{projectName}";
-
 
         DotNetPublish(_ => _
             .SetProject(project)
@@ -111,5 +103,10 @@ class Build : NukeBuild
         DockerPush(_ => _.SetName(imageTag));
     }
 
-    Target Deploy => _ => _.DependsOn(BuildDockerImages);
+    private string FormatImageTag(string imageName)
+    {
+        return $"{ContainerRegistry}/{ContainerNamespace}/{imageName}:{VersionInfo.SemVer2}";
+    }
+
+    Target Deploy => _ => _.DependsOn(PushDockerImages);
 }
